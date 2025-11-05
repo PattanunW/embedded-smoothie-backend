@@ -1,0 +1,32 @@
+@startuml
+title Login
+
+actor Client as Client
+participant "Express Server" as Server
+participant "Auth Router" as Router
+participant "Auth Controller" as Controller
+participant "User Model" as UserModel
+database "«MongoDB»\n:Users" as Database
+
+Client -> Server: POST /api/v1/auth/login
+Server -> Router: app.use('/api/v1/auth', auth)
+Router -> Controller: login(req.body)
+Controller -> UserModel: findOne({ email })
+UserModel -> Database: UserSchema
+Database --> UserModel: Return user data
+UserModel --> Controller: Return user data
+alt User not found
+    Controller -> Server: Response 401 (Invalid credentials)
+    Server -> Client: Response 401 (Invalid credentials)
+else User found
+    Controller -> UserModel: matchPassword(password)
+    UserModel -> Controller: Password comparison
+    alt Password does not match
+        Controller -> Server: Response 401 (Invalid credentials)
+        Server -> Client: Response 401 (Invalid credentials)
+    else Password matches
+        Controller -> Controller: getSignedJwtToken()
+        Controller -> Server: Response 200 (User logged in)
+        Server -> Client: Response 200 (User logged in with token)
+    end
+end

@@ -1,0 +1,20 @@
+@startuml
+title Get All Cars
+
+actor Client
+participant "Express Server" as Server
+participant "Car Router" as Router
+participant "Car Controller" as Controller
+participant "Car Model" as Model
+database "«MongoDB»\n:cars" as Database
+
+
+Client -> Server: GET /api/v1/cars/:id
+Server -> Router: app.use('/api/v1/cars', cars)
+Router -> Controller: getCar()
+Controller -> Model: find()
+Model -> Database: CarSchema
+Database --> Model: Return cars
+Model --> Controller: Return cars
+Controller -> Client: Response
+@enduml

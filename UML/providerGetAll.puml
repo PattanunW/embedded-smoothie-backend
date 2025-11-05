@@ -1,0 +1,26 @@
+@startuml
+title Get All Providers
+
+actor Client
+participant "Express Server" as Server
+participant "Provider Router" as Router
+participant "Provider Controller" as Controller
+participant "Provider Model" as Model
+database "«MongoDB»\n:providers" as Database
+
+Client -> Server: GET /api/v1/providers/:id
+Server -> Router: app.use('/api/v1/providers', providers)
+Router -> Controller: getProvider(req.params.id)
+Controller -> Model: findById(req.params.id)
+Model -> Database: ProviderSchema
+Database --> Model: Return provider
+Model --> Controller: Return provider
+alt Provider exists
+    Controller -> Server: Response 200 OK
+    Server -> Client: Response JSON of provider
+else Provider not found
+    Controller -> Server: Response (404 Not Found)
+    Server -> Client: Response (404 Not Found)
+end
+@enduml
+

@@ -1,0 +1,44 @@
+@startuml
+title Sequence Diagram - Update Rent
+
+actor Client
+participant "Express Server" as Server
+participant "Rent Router" as Router
+participant "Rent Controller" as Controller
+participant "Rent Model" as RentModel
+participant "Car Model" as CarModel
+database "MongoDB" as DB
+
+Client -> Server: PUT /api/v1/rents/:id
+Server -> Router: app.use('/api/v1/rents/:id',rents)
+Router -> Controller: updateRent()
+
+Controller -> RentModel: findById()
+RentModel -> DB: RentModel
+DB --> RentModel: Return rent data
+RentModel --> Controller: Return rent data
+
+alt Rent not found
+    Controller --> Server: Response 404 (Rent not found)
+    Server --> Client: Response 404 (Rent not found)
+end
+
+Controller -> CarModel: findById(car_id)
+CarModel -> DB: CarModel
+DB --> CarModel: Return car data
+CarModel --> Controller: Return car data
+
+alt Car not found
+    Controller --> Server: Response 404 (Car not found)
+    Server --> Client: Response 404 (Car not found)
+end
+
+Controller -> RentModel: FindByIdAndUpdate(req.params.id)
+RentModel -> DB: RentModel
+DB --> RentModel: Return rent data
+RentModel --> Controller: Return Rent data
+
+Controller --> Server: Response 200 (Rent updated successfully)
+Server --> Client: Response 200 (Rent updated)
+
+@enduml

@@ -1,2 +1,1 @@
-# embedded-smoothie-backend
-Embedded Group Smoothie Backend
+Sprint 1 in progress

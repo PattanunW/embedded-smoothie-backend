@@ -1,0 +1,30 @@
+@startuml
+title User Authentication Flow
+
+actor Client as Client
+participant "Express Server" as Server
+participant "Auth Router" as Router
+participant "Auth Controller" as Controller
+participant "User Model" as UserModel
+database "«MongoDB»\n:Users" as UserDatabase
+
+== Logout User ==
+Client -> Server: GET /api/v1/auth/logout
+Server -> Router: app.use('/api/v1/auth', auth)
+Router -> Controller: logout(req)
+Controller -> Server: clear cookie (token)
+Controller -> Server: Response 200 (User logged out)
+Server -> Client: Response 200 (User logged out)
+
+== Get Current User ==
+Client -> Server: POST /api/v1/auth/me
+Server -> Router: app.use('/api/v1/auth', auth)
+Router -> Controller: getMe(req)
+Controller -> UserModel: findById(req.user.id)
+UserModel -> UserDatabase: UserSchema
+UserDatabase --> UserModel: Return user data
+UserModel --> Controller: Return user data
+Controller -> Server: Response 200 (User data)
+Server -> Client: Response 200 (User data)
+
+@enduml

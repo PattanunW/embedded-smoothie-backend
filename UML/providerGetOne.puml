@@ -1,0 +1,19 @@
+@startuml
+title Get a Single Provider
+
+actor Client
+participant "Express Server" as Server
+participant "Provider Router" as Router
+participant "Provider Controller" as Controller
+participant "Provider Model" as Model
+database "«MongoDB»\n:providers" as Database
+
+Client -> Server: GET /api/v1/providers/:id
+Server -> Router: app.use('/api/v1/providers', providers)
+Router -> Controller: getProvider()
+Controller -> Model: find()
+Model -> Database: ProviderSchema
+Database --> Model: Return providers
+Model --> Controller: Return providers
+Controller -> Client: Response
+@enduml

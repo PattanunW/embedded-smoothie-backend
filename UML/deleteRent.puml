@@ -1,0 +1,34 @@
+@startuml
+title Sequence Diagram - Delete Rent
+
+actor Client
+participant "Express Server" as Server
+participant "Rent Router" as Router
+participant "Rent Controller" as Controller
+participant "Rent Model" as RentModel
+participant "Car Model" as CarModel
+database "MongoDB" as DB
+
+Client -> Server: DELETE /api/v1/rents/:id
+Server -> Router: app.use('/api/v1/rents/:id',rents)
+Router -> Controller: deleteRent()
+
+Controller -> RentModel: findById(rent_id)
+RentModel -> DB: RentSchema
+DB --> RentModel: Return rent data
+RentModel --> Controller: Return rent data
+
+alt Rent not found
+    Controller --> Server: Response 404 (Rent not found)
+    Server --> Client: Response 404 (Rent not found)
+end
+
+Controller -> RentModel: deleteOne(rent_id)
+RentModel -> DB: RentSchema
+DB --> RentModel: Return rent data
+RentModel --> Controller: Return rent data
+
+Controller --> Server: Response 200 (Rent deleted successfully)
+Server --> Client: Response 200 (Rent deleted)
+
+@enduml

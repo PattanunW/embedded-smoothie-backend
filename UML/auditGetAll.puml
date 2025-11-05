@@ -1,0 +1,26 @@
+@startuml
+title Audit Log Operations
+
+actor Client as Client
+participant "Express Server" as Server
+participant "AuditLog Router" as Router
+participant "AuditLog Controller" as Controller
+participant "AuditLog Model" as AuditLogModel
+database "«MongoDB»\n:AuditLogs" as AuditDatabase
+database "«MongoDB»\n:Users" as UserDatabase
+
+Client -> Server: GET /api/v1/auditlogs
+Server -> Router: app.use('/api/v1/auditlogs', auditLogs)
+Router -> Controller: getAuditLogs()
+Controller -> AuditLogModel: find()
+AuditLogModel -> AuditDatabase: AuditLogSchema
+AuditDatabase --> AuditLogModel: return audit logs
+AuditLogModel -> Controller: return audit logs
+Controller -> AuditLogModel: populate user_id with name
+AuditLogModel -> UserDatabase: UserSchema
+UserDatabase --> AuditLogModel: return user data
+AuditLogModel --> Controller: return populated audit logs
+Controller -> Server: Response 200 (All audit logs)
+Server -> Client: Response 200 (All audit logs)
+
+@enduml

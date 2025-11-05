@@ -1,0 +1,30 @@
+@startuml
+title Auth - Register
+
+actor Client as Client
+participant "Express Server" as Server
+participant "Auth Router" as Router
+participant "Auth Controller" as Controller
+participant "User Model" as UserModel
+database "«MongoDB»\n:Users" as UserDatabase
+
+Client -> Server: POST /api/v1/auth/register
+Server -> Router: app.use('/api/v1/auth', auth)
+Router -> Controller: register(req.body)
+Controller -> UserModel: findOne({ email })
+UserModel -> UserDatabase: UserSchema
+UserDatabase --> UserModel: Return user data
+UserModel --> Controller: Return user data
+alt Email already exists
+    Controller -> Server: Response 401 (Email already registered)
+    Server -> Client: Response 401 (Email already registered)
+else Email is unique
+    Controller -> UserModel: create(req.body)
+    UserModel -> UserDatabase: UserSchema
+    UserDatabase --> UserModel: Return created User
+    UserModel --> Controller: Return created User
+    Controller -> Controller: getSignedJwtToken()
+    Controller -> Server: Response 200 (User registered)
+    Server -> Client: Response 200 (User registered with token)
+end
+@enduml
