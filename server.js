@@ -1,8 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
-const mongoSanitize = require("express-mongo-sanitize");
+const { db } = require("./config/firebaseAdmin"); 
 const helmet = require("helmet");
 const { xss } = require("express-xss-sanitizer");
 const rateLimit = require("express-rate-limit");
@@ -39,8 +38,6 @@ const swaggerOptions = {
 
 dotenv.config({ path: "./config/config.env" });
 
-connectDB();
-
 const app = express();
 
 const limiter = rateLimit({
@@ -60,30 +57,22 @@ app.use(cors());
 
 const carRoute = require("./routes/carRoute");
 const authRoute = require("./routes/authRoute");
-const rentRoute = require("./routes/rentRoute");
-const providerRoute = require("./routes/providerRoute");
 const auditLogRoute = require("./routes/auditLogRoute");
-const couponRoute = require("./routes/couponRoute");
-const couponTemplateRoute = require("./routes/couponTemplateRoute");
-const ratingRoute = require("./routes/ratingRoute");
 
 app.use("/api/v1/auditlogs", auditLogRoute);
-app.use("/api/v1/providers", providerRoute);
 app.use("/api/v1/cars", carRoute);
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/rents", rentRoute);
-app.use("/api/v1/coupons", couponRoute);
-app.use("/api/v1/coupon-templates", couponTemplateRoute);
-app.use("/api/v1/ratings", ratingRoute);
 
-//tester
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+//tester firebase 
+app.get("/test", async (req, res) => {
+  const snapshot = await db.ref("test").once("value");
+  res.json(snapshot.val());
+});
+
 const PORT = process.env.PORT || 5000;
 const server = app.listen(
   PORT,
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on ${process.env.HOST}:${PORT}`
-  )
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 );
 
 //handle unhandeled promise rejections
