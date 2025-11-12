@@ -1,37 +1,30 @@
-const AuditLog = require('../models/AuditLogModel');
+import { db } from "../config/firebaseAdmin.js";
 
-// @desc    Get all audit logs
-// @route   GET /api/v1/auditlogs
-// @access  Private
-exports.getAuditLogs = async(req,res,next)=>{
-    try{
-        const auditLogs = await AuditLog.find().populate({
-            path:'user_id',
-            select:'name'
-        });
-        res.status(200).json({success:true,data:auditLogs});
-    }
-    catch(err){
-        res.status(400).json({success:false,message:'Cannot get audit logs'});
-    }
-}
+const auditLogsRef = db.ref("auditLogs");
 
-// @desc    Get a single audit log
-// @route   GET /api/v1/auditlogs/:id
-// @access  Private
-exports.getAuditLog = async(req,res,next)=>{
-    try{
-        const auditLog = await AuditLog.findById(req.params.id).populate({
-            path:'user_id',
-            select:'name'
-        });
-        if(!auditLog){
-            return res.status(404).json({success:false, message:`Audit log with the id ${req.params.id} does not exist`});
-        }
+// Get all audit logs
+export const getAuditLogs = async (req, res) => {
+  try {
+    const snapshot = await auditLogsRef.once("value");
+    const logs = snapshot.val() || {};
+    const logsArray = Object.entries(logs).map(([id, log]) => ({ id, ...log }));
+    res.status(200).json({ success: true, data: logsArray });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, message: "Cannot get audit logs" });
+  }
+};
 
-        res.status(200).json({success:true,data:auditLog});
+// Get a single audit log by ID
+export const getAuditLog = async (req, res) => {
+  try {
+    const snapshot = await auditLogsRef.child(req.params.id).once("value");
+    if (!snapshot.exists()) {
+      return res.status(404).json({ success: false, message: `Audit log with ID ${req.params.id} does not exist` });
     }
-    catch(err){
-        res.status(400).json({success:false,message:'Cannot get audit logs'});
-    }
-}
+    res.status(200).json({ success: true, data: { id: req.params.id, ...snapshot.val() } });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, message: "Cannot get audit log" });
+  }
+};

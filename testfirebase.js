@@ -12,7 +12,7 @@ async function testFirebase() {
 
     // 2️⃣ Read the value back
     const snapshot = await db.ref("test").once("value");
-    console.log("📦 Data read from Firebase:", snapshot.val());
+    console.log("Data read from Firebase:", snapshot.val());
   } catch (error) {
     console.error("Firebase Admin test failed:", error);
   }

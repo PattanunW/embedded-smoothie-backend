@@ -6,4 +6,5 @@ admin.initializeApp({
   databaseURL: "https://embedded-group-smoothie-default-rtdb.asia-southeast1.firebasedatabase.app",
 });
 
-export const db = admin.database();
+export const db = admin.database(); // named export
+export default admin; // optional default export

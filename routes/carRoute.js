@@ -1,12 +1,15 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   getCars,
   getCar,
   createCar,
   updateCar,
   deleteCar,
-} = require("../controllers/carController");
-const { protect, authorize } = require("../middleware/auth");
+} from "../controllers/carController.js";
+import { protect, authorize } from "../middleware/auth.js";
+// Import nested routers if they exist
+// import rentRouter from "./rentRoute.js";
+// import ratingRouter from "./ratingRoute.js";
 
 const router = express.Router();
 
@@ -65,21 +68,9 @@ const router = express.Router();
  *   get:
  *     summary: Get all cars
  *     tags: [Cars]
- *     parameters:
- *       - in: query
- *         name: select
- *         schema:
- *           type: string
- *         description: Fields to select (e.g., "name,pricePerDay")
- *       - in: query
- *         name: sort
- *         schema:
- *           type: string
- *         description: Fields to sort (e.g., "pricePerDay,-name")
  *     responses:
  *       200:
  *         description: List of all cars
- * 
  *   post:
  *     summary: Create a new car (Admin only)
  *     tags: [Cars]
@@ -94,14 +85,7 @@ const router = express.Router();
  *     responses:
  *       201:
  *         description: Car created successfully
- *       400:
- *         description: Failed to create car (e.g., duplicate VIN plate)
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden (Not admin)
  */
-
 
 /**
  * @swagger
@@ -115,13 +99,11 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: Car ID
  *     responses:
  *       200:
  *         description: Car retrieved successfully
  *       404:
  *         description: Car not found
- * 
  *   put:
  *     summary: Update a car by ID (Admin only)
  *     tags: [Cars]
@@ -133,7 +115,6 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: Car ID
  *     requestBody:
  *       required: true
  *       content:
@@ -143,15 +124,6 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Car updated successfully
- *       400:
- *         description: Error updating car
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden (Not admin)
- *       404:
- *         description: Car not found
- * 
  *   delete:
  *     summary: Delete a car by ID (Admin only)
  *     tags: [Cars]
@@ -163,22 +135,14 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: Car ID
  *     responses:
  *       200:
  *         description: Car deleted successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden (Not admin)
- *       404:
- *         description: Car not found
  */
 
-
-
-router.use("/:carId/rents", rentRouter);
-router.use("/:carId/ratings", ratingRouter);
+// Optional: nested routers
+// router.use("/:carId/rents", rentRouter);
+// router.use("/:carId/ratings", ratingRouter);
 
 router.route("/").get(getCars).post(protect, authorize("admin"), createCar);
 router
@@ -186,4 +150,5 @@ router
   .get(getCar)
   .put(protect, authorize("admin"), updateCar)
   .delete(protect, authorize("admin"), deleteCar);
-module.exports = router;
+
+export default router;

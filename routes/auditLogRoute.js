@@ -1,13 +1,13 @@
-const express = require('express');
-const {getAuditLogs, getAuditLog} = require('../controllers/auditLogController');
-const {protect, authorize} = require('../middleware/auth');
+import express from "express";
+import { getAuditLogs, getAuditLog } from "../controllers/auditLogController.js";
+import { protect, authorize } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.route('/').get(protect, authorize('admin'), getAuditLogs);
-router.route('/:id').get(protect, authorize('admin'), getAuditLog);
+router.route("/").get(protect, authorize("admin"), getAuditLogs);
+router.route("/:id").get(protect, authorize("admin"), getAuditLog);
 
-module.exports = router;
+export default router;
 
 /**
  * @swagger
