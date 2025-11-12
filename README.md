@@ -1,1 +1,1 @@
-Sprint 1 in progress
+https://embedded-group-smoothie-default-rtdb.asia-southeast1.firebasedatabase.app/
