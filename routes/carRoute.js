@@ -8,9 +8,6 @@ const {
 } = require("../controllers/carController");
 const { protect, authorize } = require("../middleware/auth");
 
-const rentRouter = require("./rentRoute");
-const ratingRouter = require("./ratingRoute");
-
 const router = express.Router();
 
 /**
