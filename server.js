@@ -11,7 +11,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 
 // Routes (ES module imports)
-import carRoute from "./routes/carRoute.js";
+import plantRoute from "./routes/plantRoute.js";
 import authRoute from "./routes/authRoute.js";
 import auditLogRoute from "./routes/auditLogRoute.js";
 
@@ -54,7 +54,7 @@ app.use(cors());
 
 // Routes
 app.use("/api/v1/auditlogs", auditLogRoute);
-app.use("/api/v1/cars", carRoute);
+app.use("/api/v1/plants", plantRoute);
 app.use("/api/v1/auth", authRoute);
 
 // Firebase test endpoint
