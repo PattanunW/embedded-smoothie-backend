@@ -52,6 +52,16 @@ app.use(rateLimit({ windowMs: 10 * 60 * 1000, max: 1000 }));
 app.use(hpp());
 app.use(cors());
 
+app.use((req, res, next) => {
+  console.log('='.repeat(50));
+  console.log(`Incoming Request`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`Original URL: ${req.originalUrl}`);
+  console.log('='.repeat(50));
+  next();
+});
+
 // Routes
 app.use("/api/v1/auditlogs", auditLogRoute);
 app.use("/api/v1/plants", plantRoute);
@@ -68,9 +78,8 @@ app.get("/test", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const server = app.listen(
-  PORT,
-  () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+const server = app.listen(PORT, "0.0.0.0", () =>
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 );
 
 // Handle unhandled promise rejections

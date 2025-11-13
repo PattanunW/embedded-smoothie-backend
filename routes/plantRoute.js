@@ -134,11 +134,11 @@ const router = express.Router();
  */
 
 
-router.route("/").get(getPlants).post(protect, authorize("admin"), createPlant);
+router.route("/").get(getPlants).post(protect, createPlant);
 router
   .route("/:id")
   .get(getPlant)
-  .put(protect, authorize("admin"), updatePlant)
-  .delete(protect, authorize("admin"), deletePlant);
+  .put(protect, updatePlant)
+  .delete(protect, deletePlant);
 
 export default router;
