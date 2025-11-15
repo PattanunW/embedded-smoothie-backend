@@ -1,28 +1,34 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/firebaseUser.js';
 
-// Protect routes
+// ProtectRoutes
 export const protect = async (req, res, next) => {
   let token;
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
+  // Get token from Authorization: Bearer <token>
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
   }
 
-  // Make sure token exists
-  if (!token || token === 'null') {
-    return res.status(401).json({ success: false, message: 'Not authorized to access this route' });
+  if (!token || token === "null") {
+    return res.status(401).json({ success: false, message: "Not authorized to access this route" });
   }
 
   try {
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
-    req.user = await User.findById(decoded.id);
+
+    console.log("Decoded token:", decoded);
+
+    // IMPORTANT: Set req.user directly from token payload
+    req.user = { id: decoded.id || decoded.uid };
+
+    if (!req.user.id) {
+      return res.status(401).json({ success: false, message: "Token missing user ID" });
+    }
+
     next();
   } catch (err) {
     console.log(err.stack);
-    return res.status(401).json({ success: false, message: 'Not authorized to access this route' });
+    return res.status(401).json({ success: false, message: "Not authorized to access this route" });
   }
 };
 
