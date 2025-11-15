@@ -32,9 +32,6 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
       role: role || "user",
-      totalPayment: 0,
-      totalPaymentThisYear: 0,
-      redeemCouponStatus: [false, false, false, false],
       createdAt: new Date().toISOString(),
     };
     await newUserRef.set(userData);

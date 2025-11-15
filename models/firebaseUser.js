@@ -19,9 +19,6 @@ const User = {
       email,
       password: hashedPassword,
       role,
-      totalPayment: 0,
-      totalPaymentThisYear: 0,
-      redeemCouponStatus: [false, false, false, false],
       createdAt: new Date().toISOString(),
     };
 

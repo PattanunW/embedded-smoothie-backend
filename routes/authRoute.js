@@ -49,20 +49,10 @@ export default router;
  *             - admin
  *           description: Role of the user
  *           example: user
- *         totalPayment:
- *           type: number
- *           description: Total payment made by the user
- *           example: 25000
- *         totalPaymentThisYear:
- *           type: number
- *           description: Total payment made by the user this year
- *           example: 15000
- *         redeemCouponStatus:
- *           type: array
- *           description: Status of redeemed coupons
- *           items:
- *             type: boolean
- *           example: [true, false, false, true]
+ *         plant:
+ *           type: object
+ *           description: Plants of the user
+ *           example: [plant1,plant2]
  *         createdAt:
  *           type: string
  *           format: date-time
