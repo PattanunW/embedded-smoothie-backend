@@ -139,7 +139,6 @@ export const updateDetails = async (req, res) => {
     const fieldsToUpdate = {
       name: req.body.name,
       tel: req.body.tel,
-      redeemCouponStatus: req.body.redeemCouponStatus,
       updatedAt: new Date().toISOString(),
     };
 
