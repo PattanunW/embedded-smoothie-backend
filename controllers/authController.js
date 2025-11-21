@@ -136,31 +136,38 @@ export const getMe = async (req, res) => {
 // @access  Private
 export const updateDetails = async (req, res) => {
   try {
-    const fieldsToUpdate = {
-      name: req.body.name,
-      tel: req.body.tel,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await usersRef.child(req.user.id).update(fieldsToUpdate);
-
-    // Audit log
+    const fieldsToUpdate = {};
+    const userId = req.user.id;
+    if (req.body.name !== undefined) {
+      fieldsToUpdate.name = req.body.name;
+    }
+    if (req.body.tel !== undefined) {
+      fieldsToUpdate.tel = req.body.tel;
+    }
+    
+    fieldsToUpdate.updatedAt = new Date().toISOString();
+    if (Object.keys(fieldsToUpdate).length <= 1 && !fieldsToUpdate.name && !fieldsToUpdate.tel) {
+      // You might want to return an error or a 200 success if nothing was sent
+      // For now, we proceed to update the timestamp at least.
+    }
+    
+    await usersRef.child(userId).update(fieldsToUpdate);
     await auditLogsRef.push({
       action: "Update",
-      user_id: req.user.id,
+      user_id: userId,
       target: "users",
-      target_id: req.user.id,
-      description: `User id ${req.user.id} updated their details.`,
-      timestamp: new Date().toISOString(),
+      target_id: userId,
+      description: `User id ${userId} updated their details.`,
+      timestamp: fieldsToUpdate.updatedAt,
     });
 
-    const snapshot = await usersRef.child(req.user.id).once("value");
+    const snapshot = await usersRef.child(userId).once("value");
     const updatedUser = snapshot.val();
 
-    res.status(200).json({ success: true, data: { id: req.user.id, ...updatedUser } });
+    res.status(200).json({ success: true, data: { id: userId, ...updatedUser } });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ success: false });
+    res.status(400).json({ success: false, error: err.message || 'Update failed' });
   }
 };
 
