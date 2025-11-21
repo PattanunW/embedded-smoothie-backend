@@ -20,6 +20,8 @@ const User = {
       password: hashedPassword,
       role,
       createdAt: new Date().toISOString(),
+      // 🌟 ADDITION: Initialize the plants property
+      plants: {}, // Use an empty object for optimal Firebase array handling
     };
 
     await newUserRef.set(user);
