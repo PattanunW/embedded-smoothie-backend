@@ -1,1 +1,1 @@
-https://embedded-group-smoothie-default-rtdb.asia-southeast1.firebasedatabase.app/
+https://smartfarm-aa520-default-rtdb.asia-southeast1.firebasedatabase.app

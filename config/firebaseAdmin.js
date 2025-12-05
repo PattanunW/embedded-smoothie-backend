@@ -3,8 +3,9 @@ import serviceAccount from "../firebase-admin.json" assert { type: "json" };
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://embedded-group-smoothie-default-rtdb.asia-southeast1.firebasedatabase.app",
+  // CHANGE THIS LINE BELOW 👇
+  databaseURL: "https://YOUR-NEW-FIREBASE-URL.firebasedatabase.app", 
 });
 
-export const db = admin.database(); // named export
-export default admin; // optional default export
+export const db = admin.database();
+export default admin;
